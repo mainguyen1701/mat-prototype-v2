@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admission+ | Ava Workspace - 4 Design Concepts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset ─────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.5; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    input { font-family: inherit; border: none; outline: none; }
+
+    /* ── Tokens ────────────────────────────────────────────────────── */
+    :root {
+      --bg:          #f8f9fc;
+      --fg:          #0f1729;
+      --card:        #ffffff;
+      --card-fg:     #0f1729;
+      --primary:     #4361ee;
+      --primary-fg:  #ffffff;
+      --secondary:   #eef0f6;
+      --secondary-fg:#1a2240;
+      --muted:       #eef0f6;
+      --muted-fg:    #6b7294;
+      --border:      #e2e4ec;
+      --success:     #22c55e;
+      --warning:     #eab308;
+      --danger:      #ef4444;
+      --accent:      #0ea5e9;
+      --radius:      10px;
+      --radius-sm:   6px;
+      --radius-lg:   14px;
+      --font-mono:   'JetBrains Mono', monospace;
+    }
+
+    /* ── Utility Classes ──────────────────────────────────────────── */
+    .hidden { display: none !important; }
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .flex-1 { flex: 1 1 0%; }
+    .items-center { align-items: center; }
+    .items-start { align-items: flex-start; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-end { justify-content: flex-end; }
+    .gap-1 { gap: 4px; }
+    .gap-1\.5 { gap: 6px; }
+    .gap-2 { gap: 8px; }
+    .gap-2\.5 { gap: 10px; }
+    .gap-3 { gap: 12px; }
+    .gap-4 { gap: 16px; }
+    .gap-5 { gap: 20px; }
+    .gap-6 { gap: 24px; }
+    .shrink-0 { flex-shrink: 0; }
+    .min-w-0 { min-width: 0; }
+    .w-full { width: 100%; }
+    .overflow-hidden { overflow: hidden; }
+    .overflow-y-auto { overflow-y: auto; }
+    .overflow-x-auto { overflow-x: auto; }
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+    .font-medium { font-weight: 500; }
+    .font-semibold { font-weight: 600; }
+    .font-bold { font-weight: 700; }
+    .font-mono { font-family: var(--font-mono); }
+    .leading-none { line-height: 1; }
+    .leading-tight { line-height: 1.25; }
+    .leading-relaxed { line-height: 1.625; }
+    .tracking-wider { letter-spacing: 0.05em; }
+    .tracking-tight { letter-spacing: -0.015em; }
+    .uppercase { text-transform: uppercase; }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .animate-spin { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .animate-pulse-bar { animation: pulse-bar 2s ease-in-out infinite; }
+    @keyframes pulse-bar { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+    .transition-all { transition: all 0.2s ease; }
+    .transition-colors { transition: color 0.15s, background-color 0.15s, border-color 0.15s; }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ── Concept Switcher ─────────────────────────────────────────── */
+    .switcher { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; }
+    .switcher-logo { width: 44px; height: 44px; border-radius: 12px; background: var(--primary); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin-bottom: 16px; }
+    .switcher h1 { font-size: 28px; font-weight: 700; color: var(--fg); letter-spacing: -0.015em; margin-bottom: 8px; text-wrap: balance; }
+    .switcher .subtitle { font-size: 15px; color: var(--muted-fg); max-width: 520px; margin: 0 auto 40px; line-height: 1.6; text-wrap: pretty; }
+    .concept-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 960px; width: 100%; }
+    @media (max-width: 900px) { .concept-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .concept-grid { grid-template-columns: 1fr; } }
+    .concept-card { display: flex; flex-direction: column; align-items: flex-start; border-radius: var(--radius-lg); border: 1px solid var(--border); background: var(--card); padding: 24px; text-align: left; transition: all 0.2s; }
+    .concept-card:hover { border-color: color-mix(in srgb, var(--primary) 30%, transparent); box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 6%, transparent); }
+    .concept-card-icon { width: 44px; height: 44px; border-radius: 12px; background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; transition: all 0.2s; }
+    .concept-card:hover .concept-card-icon { background: var(--primary); color: var(--primary-fg); }
+    .concept-card .label { font-size: 11px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .concept-card h2 { font-size: 17px; font-weight: 600; color: var(--card-fg); margin-bottom: 8px; }
+    .concept-card p { font-size: 13px; color: var(--muted-fg); line-height: 1.55; }
+    .concept-card .cta { margin-top: 16px; font-size: 12px; font-weight: 500; color: var(--primary); display: flex; align-items: center; gap: 6px; }
+    .concept-card:hover .cta { text-decoration: underline; }
+    .switcher-footer { margin-top: 32px; font-size: 12px; color: var(--muted-fg); }
+
+    /* ── Back Button ──────────────────────────────────────────────── */
+    .back-btn { position: fixed; top: 12px; right: 12px; z-index: 100; display: flex; align-items: center; gap: 6px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); padding: 6px 12px; font-size: 12px; font-weight: 500; color: var(--fg); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .back-btn:hover { background: var(--secondary); }
+
+    /* ── Shared Components ────────────────────────────────────────── */
+    /* Avatar */
+    .avatar { display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 600; flex-shrink: 0; }
+    .avatar-sm { width: 28px; height: 28px; font-size: 11px; }
+    .avatar-md { width: 36px; height: 36px; font-size: 13px; }
+    .avatar-ava { background: var(--primary); color: var(--primary-fg); }
+    .avatar-user { background: var(--secondary); color: var(--secondary-fg); }
+
+    /* Status Chip */
+    .status-chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 2px 10px; font-size: 11px; font-weight: 500; }
+    .status-working { background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--primary); }
+    .status-complete { background: color-mix(in srgb, var(--success) 10%, transparent); color: var(--success); }
+    .status-waiting { background: color-mix(in srgb, var(--warning) 12%, transparent); color: var(--warning); }
+
+    /* Checklist Step */
+    .step { display: flex; align-items: flex-start; gap: 10px; padding: 4px 0; }
+    .step-icon { width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; }
+    .step-icon.done { color: var(--success); }
+    .step-icon.active { color: var(--primary); }
+    .step-icon.pending { color: color-mix(in srgb, var(--muted-fg) 40%, transparent); }
+    .step-label { font-size: 13px; line-height: 1.3; }
+    .step-label.done { color: var(--muted-fg); }
+    .step-label.active { color: var(--fg); font-weight: 500; }
+    .step-label.pending { color: color-mix(in srgb, var(--muted-fg) 60%, transparent); }
+    .step-detail { font-size: 12px; color: var(--muted-fg); margin-top: 2px; }
+
+    /* Confidence Bar */
+    .confidence { display: flex; align-items: center; gap: 8px; }
+    .confidence-track { flex: 1; height: 6px; border-radius: 3px; background: var(--muted); overflow: hidden; }
+    .confidence-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+    .confidence-fill.high { background: var(--success); }
+    .confidence-fill.mid { background: var(--warning); }
+    .confidence-fill.low { background: var(--danger); }
+    .confidence-value { font-size: 12px; font-family: var(--font-mono); color: var(--muted-fg); }
+
+    /* Quick Action Chip */
+    .quick-action { display: inline-flex; align-items: center; gap: 6px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); padding: 6px 12px; font-size: 12px; font-weight: 500; color: var(--fg); }
+    .quick-action:hover { background: var(--secondary); border-color: color-mix(in srgb, var(--primary) 20%, transparent); }
+    .quick-action svg { color: var(--muted-fg); }
+
+    /* Tag */
+    .tag { display: inline-flex; align-items: center; border-radius: 6px; padding: 2px 8px; font-size: 10px; font-weight: 500; }
+    .tag-success { background: color-mix(in srgb, var(--success) 10%, transparent); color: var(--success); }
+    .tag-warning { background: color-mix(in srgb, var(--warning) 12%, transparent); color: var(--warning); }
+    .tag-danger { background: color-mix(in srgb, var(--danger) 10%, transparent); color: var(--danger); }
+
+    /* Button */
+    .btn { display: inline-flex; align-items: center; gap: 6px; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 500; transition: all 0.15s; }
+    .btn-primary { background: var(--primary); color: var(--primary-fg); }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-outline { border: 1px solid var(--border); color: var(--fg); background: transparent; }
+    .btn-outline:hover { background: var(--secondary); }
+    .btn-sm { padding: 5px 10px; font-size: 11px; border-radius: 6px; }
+    .btn-danger-text { color: var(--danger); font-size: 12px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-danger-text:hover { text-decoration: underline; }
+
+    /* Chat Input */
+    .chat-input-wrap { position: relative; }
+    .chat-input { width: 100%; border-radius: 12px; border: 1px solid var(--border); background: var(--card); padding: 12px 72px 12px 16px; font-size: 13px; color: var(--fg); }
+    .chat-input::placeholder { color: var(--muted-fg); }
+    .chat-input:focus { border-color: color-mix(in srgb, var(--primary) 40%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 8%, transparent); }
+    .chat-input-actions { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 4px; }
+    .chat-input-btn { border-radius: 8px; padding: 6px; color: var(--muted-fg); }
+    .chat-input-btn:hover { color: var(--fg); background: var(--secondary); }
+    .chat-input-send { border-radius: 8px; padding: 6px; background: var(--primary); color: var(--primary-fg); }
+    .chat-input-send:hover { opacity: 0.9; }
+
+    /* ── Sidebar (Concepts A, B, D) ───────────────────────────────── */
+    .sidebar { width: 240px; height: 100%; display: flex; flex-direction: column; border-right: 1px solid var(--border); background: var(--card); flex-shrink: 0; }
+    .sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+    .sidebar-logo-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--primary); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+    .sidebar-logo-text { font-size: 13px; font-weight: 600; color: var(--fg); }
+    .sidebar-logo-sub { font-size: 11px; color: var(--muted-fg); }
+    .sidebar-nav { flex: 1; padding: 12px; }
+    .sidebar-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border-radius: 6px; font-size: 13px; color: var(--fg); transition: all 0.15s; }
+    .sidebar-item:hover { background: var(--secondary); }
+    .sidebar-item.active { background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--primary); font-weight: 500; }
+    .sidebar-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .sidebar-badge { margin-left: auto; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: var(--primary-fg); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--border); }
+    .sidebar-user-name { font-size: 13px; font-weight: 500; color: var(--fg); }
+    .sidebar-user-role { font-size: 11px; color: var(--muted-fg); }
+
+    /* ── CONCEPT A: Chat-Centric ──────────────────────────────────── */
+    .ca-wrap { display: flex; height: 100vh; background: var(--bg); }
+    .ca-main { flex: 1; display: flex; flex-direction: column; }
+    .ca-topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid var(--border); }
+    .ca-topbar-left { display: flex; align-items: center; gap: 12px; }
+    .ca-topbar-meta { display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--muted-fg); }
+    .ca-online-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
+    .ca-messages { flex: 1; overflow-y: auto; padding: 24px; }
+    .ca-messages-inner { display: flex; flex-direction: column; gap: 24px; }
+    .ca-msg { display: flex; gap: 12px; }
+    .ca-msg-user { justify-content: flex-end; }
+    .ca-msg-user .ca-bubble { background: var(--primary); color: var(--primary-fg); border-radius: 16px 16px 4px 16px; padding: 10px 16px; max-width: 460px; font-size: 13px; }
+    .ca-msg-ava { justify-content: flex-start; }
+
+    /* Labour Card */
+    .labour-card { border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .labour-card-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; cursor: pointer; }
+    .labour-card-header:hover { background: color-mix(in srgb, var(--secondary) 50%, transparent); }
+    .labour-card-body { border-top: 1px solid var(--border); padding: 12px 16px; }
+    .labour-card-section { padding-top: 12px; margin-top: 12px; border-top: 1px solid var(--border); }
+
+    /* Email Preview */
+    .email-preview { border-radius: 8px; border: 1px solid var(--border); background: var(--card); padding: 12px; }
+    .email-preview-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .email-preview-to { font-size: 12px; font-weight: 500; color: var(--fg); }
+    .email-preview-link { font-size: 11px; color: var(--primary); cursor: pointer; }
+    .email-preview-link:hover { text-decoration: underline; }
+    .email-preview-subject { font-size: 12px; color: var(--muted-fg); margin-bottom: 4px; }
+
+    .ca-bottom { border-top: 1px solid var(--border); padding: 12px 24px; }
+    .ca-bottom-inner { }
+    .ca-quick-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+
+    /* Labour card two-column body */
+    .labour-card-body-grid { display: flex; flex-direction: column; }
+    .labour-card-col { }
+    .labour-card-actions { border-top: 1px solid var(--border); padding-top: 12px; margin-top: 12px; display: flex; align-items: center; gap: 8px; }
+    @media (min-width: 768px) {
+      .labour-card-body-grid { display: grid; grid-template-columns: 2fr 3fr; gap: 0 20px; }
+      .labour-card-col { }
+      .labour-card-actions { grid-column: 1 / -1; }
+    }
+
+    /* ── CONCEPT B: Command Center ────────────────────────────────── */
+    .cb-wrap { display: flex; height: 100vh; background: var(--bg); }
+    .cb-center { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+    .cb-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+    .cb-stat { display: flex; align-items: center; gap: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); padding: 12px; }
+    .cb-stat-icon { width: 36px; height: 36px; border-radius: 8px; background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--primary); display: flex; align-items: center; justify-content: center; }
+    .cb-stat-value { font-size: 18px; font-weight: 600; color: var(--card-fg); line-height: 1; }
+    .cb-stat-label { font-size: 11px; color: var(--muted-fg); margin-top: 2px; }
+    .cb-chat { flex: 1; overflow-y: auto; padding: 20px; }
+    .cb-chat-inner { display: flex; flex-direction: column; gap: 16px; }
+    .cb-user-msg { display: flex; align-items: flex-start; gap: 10px; justify-content: flex-end; }
+    .cb-user-bubble { border-radius: 16px 16px 4px 16px; background: var(--primary); color: var(--primary-fg); padding: 10px 16px; font-size: 13px; max-width: 320px; }
+    .cb-ava-msg { display: flex; align-items: flex-start; gap: 10px; }
+    .cb-task-card { display: flex; align-items: flex-start; gap: 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); padding: 12px; text-align: left; width: 100%; transition: all 0.15s; cursor: pointer; }
+    .cb-task-card:hover { background: color-mix(in srgb, var(--secondary) 50%, transparent); }
+    .cb-task-card.selected { border-color: color-mix(in srgb, var(--primary) 30%, transparent); background: color-mix(in srgb, var(--primary) 5%, transparent); box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+    .cb-task-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .cb-task-icon.working { background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--primary); }
+    .cb-task-icon.waiting { background: color-mix(in srgb, var(--warning) 12%, transparent); color: var(--warning); }
+    .cb-task-icon.complete { background: color-mix(in srgb, var(--success) 10%, transparent); color: var(--success); }
+    .cb-task-title { font-size: 13px; font-weight: 500; color: var(--card-fg); }
+    .cb-task-summary { font-size: 12px; color: var(--muted-fg); margin-top: 2px; }
+    .cb-task-footer { display: flex; align-items: center; gap: 12px; margin-top: 8px; font-size: 11px; color: var(--muted-fg); }
+    .cb-task-detail-link { color: var(--primary); display: flex; align-items: center; gap: 4px; }
+    .cb-bottom { border-top: 1px solid var(--border); padding: 12px 20px; }
+    .cb-suggestions { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .cb-suggestion-chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); padding: 4px 10px; font-size: 12px; color: var(--fg); }
+    .cb-suggestion-chip:hover { background: var(--secondary); }
+
+    /* Right panel */
+    .cb-right { width: 380px; background: var(--card); display: flex; flex-direction: column; flex-shrink: 0; }
+    .cb-right-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .cb-right-body { flex: 1; overflow-y: auto; padding: 16px; }
+    .cb-right-section { margin-bottom: 16px; }
+    .cb-right-section-title { font-size: 11px; font-weight: 500; color: var(--muted-fg); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .cb-receipt { border-radius: 8px; border: 1px solid var(--border); background: color-mix(in srgb, var(--muted) 30%, transparent); padding: 12px; }
+    .cb-receipt-row { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; }
+    .cb-receipt-label { color: var(--muted-fg); }
+    .cb-receipt-value { color: var(--fg); font-family: var(--font-mono); }
+    .cb-preview-card { border-radius: 8px; border: 1px solid var(--border); background: color-mix(in srgb, var(--secondary) 30%, transparent); padding: 12px; margin-bottom: 8px; }
+    .cb-preview-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .cb-preview-label { font-size: 12px; font-weight: 500; color: var(--fg); }
+    .cb-preview-link { font-size: 11px; color: var(--primary); cursor: pointer; }
+    .cb-preview-detail { font-size: 11px; color: var(--muted-fg); }
+
+    /* ── CONCEPT C: Activity Feed ─────────────────────────────────── */
+    .cc-wrap { display: flex; flex-direction: column; height: 100vh; background: var(--bg); }
+    .cc-topnav { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--card); padding: 10px 24px; }
+    .cc-topnav-left { display: flex; align-items: center; gap: 24px; }
+    .cc-topnav-brand { display: flex; align-items: center; gap: 8px; }
+    .cc-topnav-brand-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--primary); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+    .cc-topnav-brand-text { font-size: 13px; font-weight: 600; color: var(--fg); }
+    .cc-nav { display: flex; align-items: center; gap: 4px; }
+    .cc-nav-item { display: flex; align-items: center; gap: 6px; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 500; color: var(--muted-fg); transition: all 0.15s; }
+    .cc-nav-item:hover { color: var(--fg); background: var(--secondary); }
+    .cc-nav-item.active { background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--primary); }
+    .cc-nav-item svg { width: 14px; height: 14px; }
+    .cc-topnav-right { display: flex; align-items: center; gap: 12px; }
+    .cc-bell { position: relative; padding: 6px; border-radius: 6px; color: var(--muted-fg); }
+    .cc-bell:hover { color: var(--fg); background: var(--secondary); }
+    .cc-bell-badge { position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%; background: var(--primary); color: var(--primary-fg); font-size: 8px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .cc-body { display: flex; flex: 1; overflow: hidden; }
+    .cc-feed { flex: 1; overflow-y: auto; }
+    .cc-feed-inner { max-width: 680px; margin: 0 auto; padding: 24px; }
+    .cc-feed-header { margin-bottom: 24px; }
+    .cc-feed-header h1 { font-size: 18px; font-weight: 600; color: var(--fg); display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .cc-feed-header h1 svg { width: 16px; height: 16px; color: var(--primary); }
+    .cc-feed-header p { font-size: 13px; color: var(--muted-fg); }
+    .cc-filters { display: flex; gap: 8px; margin-bottom: 24px; }
+    .cc-filter { border-radius: 999px; padding: 4px 14px; font-size: 12px; font-weight: 500; background: var(--secondary); color: var(--secondary-fg); transition: all 0.15s; }
+    .cc-filter:hover { opacity: 0.8; }
+    .cc-filter.active { background: var(--primary); color: var(--primary-fg); }
+
+    /* Timeline */
+    .timeline-item { display: flex; gap: 12px; }
+    .timeline-connector { display: flex; flex-direction: column; align-items: center; }
+    .timeline-line { width: 1px; flex: 1; background: var(--border); margin-top: 8px; }
+    .timeline-content { flex: 1; padding-bottom: 24px; min-width: 0; }
+    .timeline-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .timeline-author { font-size: 12px; font-weight: 500; color: var(--fg); }
+    .timeline-time { font-size: 11px; color: var(--muted-fg); }
+    .timeline-user-msg { border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); padding: 10px 16px; font-size: 13px; color: var(--card-fg); }
+    .timeline-system-msg { border-radius: 8px; background: color-mix(in srgb, var(--muted) 50%, transparent); padding: 10px 16px; font-size: 12px; color: var(--muted-fg); }
+    .timeline-system-msg strong { color: var(--fg); font-weight: 500; }
+
+    /* Action Block */
+    .action-block { border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); overflow: hidden; }
+    .action-block-summary { padding: 12px 16px; }
+    .action-block-summary-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .action-block-summary-text { font-size: 12px; color: var(--muted-fg); }
+    .action-block-progress { height: 4px; border-radius: 2px; background: var(--muted); overflow: hidden; margin-top: 8px; }
+    .action-block-progress-fill { height: 100%; border-radius: 2px; background: var(--primary); }
+    .action-block-toggle { display: flex; align-items: center; justify-content: center; gap: 6px; border-top: 1px solid var(--border); padding: 8px; font-size: 12px; color: var(--muted-fg); width: 100%; cursor: pointer; }
+    .action-block-toggle:hover { background: color-mix(in srgb, var(--secondary) 50%, transparent); color: var(--fg); }
+    .action-block-expanded { border-top: 1px solid var(--border); padding: 12px 16px; }
+
+    /* Quick Panel (Concept C right) */
+    .cc-panel { width: 320px; border-left: 1px solid var(--border); background: var(--card); display: flex; flex-direction: column; flex-shrink: 0; }
+    .cc-panel-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .cc-panel-chat { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+    .cc-mini-ava { display: flex; gap: 8px; }
+    .cc-mini-ava-bubble { border-radius: 12px 12px 12px 2px; background: var(--secondary); padding: 8px 14px; font-size: 12px; color: var(--secondary-fg); max-width: 200px; }
+    .cc-mini-user { display: flex; gap: 8px; justify-content: flex-end; }
+    .cc-mini-user-bubble { border-radius: 12px 12px 2px 12px; background: var(--primary); padding: 8px 14px; font-size: 12px; color: var(--primary-fg); max-width: 200px; }
+    .cc-mini-interview { display: flex; align-items: center; gap: 8px; border-radius: 6px; border: 1px solid var(--border); padding: 6px 10px; font-size: 11px; color: var(--fg); }
+    .cc-mini-interview svg { width: 12px; height: 12px; color: var(--muted-fg); }
+    .cc-panel-suggested { padding: 8px 16px; border-top: 1px solid var(--border); }
+    .cc-panel-suggested-title { font-size: 11px; color: var(--muted-fg); margin-bottom: 8px; }
+    .cc-panel-suggested-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; font-size: 12px; color: var(--fg); width: 100%; }
+    .cc-panel-suggested-item:hover { background: var(--secondary); }
+    .cc-panel-suggested-item svg { width: 14px; height: 14px; color: var(--muted-fg); }
+    .cc-panel-input { padding: 12px; border-top: 1px solid var(--border); }
+
+    /* ── CONCEPT D: Kanban Board ──────────────────────────────────── */
+    .cd-wrap { display: flex; height: 100vh; background: var(--bg); }
+    .cd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .cd-topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid var(--border); }
+    .cd-topbar-meta { display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--muted-fg); }
+    .cd-topbar-divider { width: 1px; height: 12px; background: var(--border); }
+    .cd-chat-toggle { display: flex; align-items: center; gap: 6px; border-radius: 8px; border: 1px solid; padding: 6px 12px; font-size: 12px; font-weight: 500; }
+    .cd-chat-toggle.active { border-color: color-mix(in srgb, var(--primary) 30%, transparent); background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--primary); }
+    .cd-chat-toggle.inactive { border-color: var(--border); background: var(--card); color: var(--fg); }
+    .cd-board-area { display: flex; flex: 1; overflow: hidden; }
+    .cd-columns { flex: 1; overflow-x: auto; display: flex; gap: 16px; padding: 20px; }
+    .cd-column { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; border-radius: var(--radius); border: 1px solid var(--border); background: color-mix(in srgb, var(--muted) 30%, transparent); }
+    .cd-column-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; }
+    .cd-column-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .cd-column-label { font-size: 13px; font-weight: 600; }
+    .cd-column-count { min-width: 20px; height: 20px; border-radius: 50%; background: var(--muted); padding: 0 6px; font-size: 11px; font-weight: 500; color: var(--muted-fg); display: flex; align-items: center; justify-content: center; }
+    .cd-column-cards { flex: 1; overflow-y: auto; padding: 0 12px 12px; display: flex; flex-direction: column; gap: 10px; }
+    .cd-card { display: flex; flex-direction: column; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); padding: 14px; text-align: left; width: 100%; transition: all 0.15s; cursor: pointer; }
+    .cd-card:hover { border-color: color-mix(in srgb, var(--primary) 20%, transparent); box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    .cd-card.selected { border-color: color-mix(in srgb, var(--primary) 40%, transparent); background: color-mix(in srgb, var(--primary) 5%, transparent); box-shadow: 0 1px 4px rgba(0,0,0,0.05); outline: 1px solid color-mix(in srgb, var(--primary) 20%, transparent); }
+    .cd-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+    .cd-card-header-left { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+    .cd-card-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .cd-card-title { font-size: 13px; font-weight: 500; color: var(--card-fg); line-height: 1.3; }
+    .cd-card-summary { font-size: 12px; color: var(--muted-fg); margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .cd-card-progress { margin-bottom: 8px; }
+    .cd-card-progress-bar { height: 4px; border-radius: 2px; background: var(--muted); overflow: hidden; }
+    .cd-card-progress-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+    .cd-card-progress-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; font-size: 10px; color: var(--muted-fg); }
+    .cd-card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+    .cd-card-footer { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--muted-fg); }
+
+    /* Detail drawer */
+    .cd-detail { width: 360px; background: var(--card); border-left: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+    .cd-detail-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+    .cd-detail-body { flex: 1; overflow-y: auto; padding: 20px; }
+    .cd-detail-section { margin-bottom: 20px; }
+    .cd-detail-section-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-fg); margin-bottom: 10px; }
+    .cd-detail-actions { margin-top: 20px; display: flex; align-items: center; gap: 8px; }
+
+    /* Chat drawer bottom */
+    .cd-chat-drawer { border-top: 1px solid var(--border); background: var(--card); transition: height 0.3s ease; overflow: hidden; }
+    .cd-chat-drawer.open { height: 320px; }
+    .cd-chat-drawer.closed { height: 48px; }
+    .cd-chat-drawer-toggle { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; width: 100%; cursor: pointer; }
+    .cd-chat-drawer-toggle:hover { background: color-mix(in srgb, var(--secondary) 50%, transparent); }
+    .cd-chat-drawer-body { display: flex; flex-direction: column; height: calc(100% - 48px); }
+    .cd-chat-messages { flex: 1; overflow-y: auto; padding: 12px 20px; display: flex; flex-direction: column; gap: 12px; max-width: 680px; margin: 0 auto; width: 100%; }
+    .cd-chat-ava-row { display: flex; gap: 10px; }
+    .cd-chat-ava-bubble { border-radius: 12px 12px 12px 2px; background: var(--secondary); padding: 10px 14px; font-size: 13px; color: var(--secondary-fg); max-width: 480px; }
+    .cd-chat-user-row { display: flex; gap: 10px; justify-content: flex-end; }
+    .cd-chat-user-bubble { border-radius: 12px 12px 2px 12px; background: var(--primary); padding: 10px 14px; font-size: 13px; color: var(--primary-fg); max-width: 480px; }
+    .cd-chat-bottom { border-top: 1px solid var(--border); padding: 12px 20px; }
+    .cd-chat-bottom-inner { max-width: 680px; margin: 0 auto; }
+    .cd-chat-quick-actions { display: flex; gap: 8px; margin-bottom: 10px; }
+
+    /* Empty column state */
+    .cd-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 0; text-align: center; }
+    .cd-empty-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--muted); display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+    .cd-empty-icon svg { width: 16px; height: 16px; color: var(--muted-fg); }
+    .cd-empty p { font-size: 12px; color: var(--muted-fg); }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     CONCEPT SWITCHER
+     ══════════════════════════════════════════════════════════════════ -->
+<div id="switcher" class="switcher">
+  <div class="switcher-logo">A+</div>
+  <h1>Ava Workspace Design Concepts</h1>
+  <p class="subtitle">Four design directions for how school admins interact with Ava, the AI admissions agent. Each concept showcases transparent labour, live task execution, and verifiable autonomous actions.</p>
+  <div class="concept-grid">
+    <!-- Concept A -->
+    <button class="concept-card" onclick="showConcept('a')">
+      <div class="concept-card-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+      </div>
+      <div class="label">Concept A</div>
+      <h2>Chat-Centric</h2>
+      <p>Full-width conversational UI with inline labour cards, email previews, and rich action blocks. Classic chat with transparent AI work.</p>
+      <span class="cta">View prototype <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 7l5 5-5 5M6 12h12"/></svg></span>
+    </button>
+    <!-- Concept B -->
+    <button class="concept-card" onclick="showConcept('b')">
+      <div class="concept-card-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>
+      </div>
+      <div class="label">Concept B</div>
+      <h2>Command Center</h2>
+      <p>Split-pane layout with chat on the left and a detail inspector on the right. Click any task to drill into steps, receipts, and previews.</p>
+      <span class="cta">View prototype <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 7l5 5-5 5M6 12h12"/></svg></span>
+    </button>
+    <!-- Concept C -->
+    <button class="concept-card" onclick="showConcept('c')">
+      <div class="concept-card-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+      </div>
+      <div class="label">Concept C</div>
+      <h2>Activity Feed</h2>
+      <p>Timeline-based workspace with horizontal top nav and docked quick-chat panel. All AI actions appear as expandable timeline entries.</p>
+      <span class="cta">View prototype <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 7l5 5-5 5M6 12h12"/></svg></span>
+    </button>
+    <!-- Concept D -->
+    <button class="concept-card" onclick="showConcept('d')">
+      <div class="concept-card-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="6" height="18" rx="1"/><rect x="9" y="3" width="6" height="18" rx="1"/><rect x="16" y="3" width="6" height="18" rx="1"/></svg>
+      </div>
+      <div class="label">Concept D</div>
+      <h2>Kanban Board</h2>
+      <p>Task board where Ava's work flows through status columns. Chat lives in a persistent bottom drawer. Pipeline-native view.</p>
+      <span class="cta">View prototype <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 7l5 5-5 5M6 12h12"/></svg></span>
+    </button>
+  </div>
+  <p class="switcher-footer">All concepts use the same task data: document chasing, form launch, and interview invitations.</p>
+</div>
+
+<!-- ── Back Button (shared) ──────────────────────────────────────── -->
+<button id="back-btn" class="back-btn hidden" onclick="showSwitcher()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5 5-5m-5 5h12"/></svg>
+  All concepts
+</button>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     CONCEPT A: CHAT-CENTRIC
+     ══════════════════════════════════════════════════════════════════ -->
+<div id="concept-a" class="hidden">
+  <div class="ca-wrap">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">A+</div>
+        <div>
+          <div class="sidebar-logo-text">Admission+</div>
+          <div class="sidebar-logo-sub">Greenfield Academy</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="sidebar-item active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+          Chat with Ava
+          <span class="sidebar-badge">3</span>
+        </button>
+        <button class="sidebar-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+          Applications
+        </button>
+        <button class="sidebar-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg>
+          Documents
+        </button>
+        <button class="sidebar-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          Communications
+        </button>
+        <button class="sidebar-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Students
+        </button>
+      </nav>
+      <div class="sidebar-user">
+        <div class="avatar avatar-sm avatar-user">JB</div>
+        <div>
+          <div class="sidebar-user-name">Jane Baker</div>
+          <div class="sidebar-user-role">Admissions Lead</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="ca-main">
+      <!-- Topbar -->
+      <header class="ca-topbar">
+        <div class="ca-topbar-left">
+          <div class="avatar avatar-md avatar-ava">A</div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--fg)">Ava</div>
+            <div style="font-size:12px;color:var(--muted-fg)">Your admissions assistant</div>
+          </div>
+        </div>
+        <div class="ca-topbar-meta">
+          <span style="display:flex;align-items:center;gap:6px"><span class="ca-online-dot"></span> Online</span>
+          <span>247 applications this cycle</span>
+        </div>
+      </header>
+
+      <!-- Messages -->
+      <div class="ca-messages">
+        <div class="ca-messages-inner">
+          <!-- User message -->
+          <div class="ca-msg ca-msg-user">
+            <div class="ca-bubble">Chase all students with incomplete documents for Year 12 applications</div>
+            <div class="avatar avatar-sm avatar-user">JB</div>
+          </div>
+
+          <!-- Ava: Labour card - document chase -->
+          <div class="ca-msg ca-msg-ava">
+            <div class="avatar avatar-sm avatar-ava">A</div>
+            <div class="labour-card">
+              <div class="labour-card-header">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span class="status-chip status-complete">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                    Complete
+                  </span>
+                  <span style="font-size:13px;font-weight:500;color:var(--card-fg)">Chasing incomplete documents</span>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted-fg)" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <div class="labour-card-body">
+                <div class="labour-card-body-grid">
+                  <!-- Left column: Steps + Confidence -->
+                  <div class="labour-card-col">
+                    <div class="step">
+                      <svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                      <div>
+                        <div class="step-label done">Scanning 247 applications</div>
+                        <div class="step-detail">Found 23 with missing documents</div>
+                      </div>
+                    </div>
+                    <div class="step">
+                      <svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                      <div>
+                        <div class="step-label done">Identifying missing documents</div>
+                        <div class="step-detail">Proof of address (12), GCSE certificates (8), Passport (3)</div>
+                      </div>
+                    </div>
+                    <div class="step">
+                      <svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                      <div class="step-label done">Generating personalised emails</div>
+                    </div>
+                    <div class="step">
+                      <svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                      <div class="step-label done">Emails queued and sent</div>
+                    </div>
+
+                  </div>
+
+                  <!-- Right column: Email Previews + Tags -->
+                  <div class="labour-card-col">
+                    <div style="font-size:12px;color:var(--muted-fg);margin-bottom:8px">Preview (3 of 23):</div>
+                    <div style="display:flex;flex-direction:column;gap:8px">
+                      <div class="email-preview">
+                        <div class="email-preview-header">
+                          <span class="email-preview-to">Aisha Rahman</span>
+                          <span class="email-preview-link">View full email</span>
+                        </div>
+                        <div class="email-preview-subject">Subject: Missing documents for your application</div>
+                        <span class="tag tag-danger">Missing: Proof of address</span>
+                      </div>
+                      <div class="email-preview">
+                        <div class="email-preview-header">
+                          <span class="email-preview-to">James Patterson</span>
+                          <span class="email-preview-link">View full email</span>
+                        </div>
+                        <div class="email-preview-subject">Subject: Missing documents for your application</div>
+                        <span class="tag tag-danger">Missing: GCSE certificates</span>
+                      </div>
+                      <div class="email-preview">
+                        <div class="email-preview-header">
+                          <span class="email-preview-to">Sofia Chen</span>
+                          <span class="email-preview-link">View full email</span>
+                        </div>
+                        <div class="email-preview-subject">Subject: Missing documents for your application</div>
+                        <span class="tag tag-danger">Missing: Passport copy</span>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <!-- Confidence (full width) -->
+                  <div class="labour-card-section" style="grid-column:1/-1">
+                    <div style="font-size:12px;color:var(--muted-fg);margin-bottom:6px">Confidence</div>
+                    <div class="confidence">
+                      <div class="confidence-track"><div class="confidence-fill high" style="width:92%"></div></div>
+                      <span class="confidence-value">92%</span>
+                    </div>
+                  </div>
+
+                  <!-- Summary tags (full width) -->
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;grid-column:1/-1;margin-top:12px">
+                    <span class="tag tag-success">12 excellent matches</span>
+                    <span class="tag tag-warning">8 good matches</span>
+                    <span class="tag tag-danger">3 may need phone call</span>
+                  </div>
+
+                  <!-- Actions (full width) -->
+                  <div class="labour-card-actions">
+                    <button class="btn btn-outline btn-sm">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                      View all emails
+                    </button>
+                    <button class="btn btn-outline btn-sm">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                      Undo send
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- User message 2 -->
+          <div class="ca-msg ca-msg-user">
+            <div class="ca-bubble">Prepare the 6th form application for launch</div>
+            <div class="avatar avatar-sm avatar-user">JB</div>
+          </div>
+
+          <!-- Ava: Form launch card -->
+          <div class="ca-msg ca-msg-ava">
+            <div class="avatar avatar-sm avatar-ava">A</div>
+            <div class="labour-card">
+              <div class="labour-card-header">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span class="status-chip status-waiting">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Awaiting approval
+                  </span>
+                  <span style="font-size:13px;font-weight:500;color:var(--card-fg)">6th Form Application Launch</span>
+                </div>
+              </div>
+              <div class="labour-card-body">
+                <div class="labour-card-body-grid">
+                  <!-- Left column: Pre-flight checks -->
+                  <div class="labour-card-col">
+                    <div style="font-size:12px;color:var(--muted-fg);margin-bottom:12px">8 pre-flight checks completed:</div>
+                    <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">Landing page configured</div></div>
+                    <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">Email templates verified</div></div>
+                    <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">32 courses loaded</div></div>
+                    <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">6 timetable blocks set</div></div>
+                    <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">198 Y11 students imported from Bromcom</div></div>
+                  </div>
+
+                  <!-- Right column: Manual checks -->
+                  <div class="labour-card-col">
+                    <div style="font-size:12px;font-weight:500;color:var(--warning);margin-bottom:8px">Manual checks needed:</div>
+                    <div class="step"><svg class="step-icon pending" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg><div class="step-label pending">Form URL added to website</div></div>
+                    <div class="step"><svg class="step-icon pending" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg><div class="step-label pending">SLT notified of go-live date</div></div>
+                  </div>
+
+                  <!-- Actions (full width) -->
+                  <div class="labour-card-actions">
+                    <button class="btn btn-primary btn-sm">Launch form</button>
+                    <button class="btn btn-outline btn-sm">Adjust settings</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ava: Working card -->
+          <div class="ca-msg ca-msg-ava">
+            <div class="avatar avatar-sm avatar-ava">A</div>
+            <div class="labour-card">
+              <div class="labour-card-header">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span class="status-chip status-working">
+                    <svg class="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                    Working
+                  </span>
+                  <span style="font-size:13px;font-weight:500;color:var(--card-fg)">Auto-inviting interview candidates</span>
+                </div>
+              </div>
+              <div class="labour-card-body">
+                <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div><div class="step-label done">Filtering eligible candidates</div><div class="step-detail">16 candidates found</div></div></div>
+                <div class="step"><svg class="step-icon active animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><div class="step-label active">Matching criteria: grades, references, statement</div></div>
+                <div class="step"><svg class="step-icon pending" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg><div class="step-label pending">Generating invitations</div></div>
+                <div class="step"><svg class="step-icon pending" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg><div class="step-label pending">Scheduling slots</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom input -->
+      <div class="ca-bottom">
+        <div class="ca-bottom-inner">
+          <div class="ca-quick-actions">
+            <button class="quick-action"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> Chase documents</button>
+            <button class="quick-action"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg> Application summary</button>
+            <button class="quick-action"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Call list for today</button>
+            <button class="quick-action"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg> What should I do next?</button>
+          </div>
+          <div class="chat-input-wrap">
+            <input class="chat-input" placeholder="Ask Ava anything about admissions..." />
+            <div class="chat-input-actions">
+              <button class="chat-input-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+              <button class="chat-input-send"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     CONCEPT B: COMMAND CENTER
+     ══════════════════════════════════════════════════════════════════ -->
+<div id="concept-b" class="hidden">
+  <div class="cb-wrap">
+    <!-- Same sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo"><div class="sidebar-logo-icon">A+</div><div><div class="sidebar-logo-text">Admission+</div><div class="sidebar-logo-sub">Greenfield Academy</div></div></div>
+      <nav class="sidebar-nav">
+        <button class="sidebar-item active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg> Chat with Ava <span class="sidebar-badge">3</span></button>
+        <button class="sidebar-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg> Applications</button>
+        <button class="sidebar-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg> Documents</button>
+        <button class="sidebar-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> Communications</button>
+        <button class="sidebar-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Students</button>
+      </nav>
+      <div class="sidebar-user"><div class="avatar avatar-sm avatar-user">JB</div><div><div class="sidebar-user-name">Jane Baker</div><div class="sidebar-user-role">Admissions Lead</div></div></div>
+    </aside>
+
+    <!-- Center: Chat + Task cards -->
+    <div class="cb-center">
+      <!-- Stats -->
+      <div class="cb-stats">
+        <div class="cb-stat"><div class="cb-stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></div><div><div class="cb-stat-value">247</div><div class="cb-stat-label">Total applications</div></div></div>
+        <div class="cb-stat"><div class="cb-stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="cb-stat-value">34</div><div class="cb-stat-label">Interviews scheduled</div></div></div>
+        <div class="cb-stat"><div class="cb-stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="cb-stat-value">5</div><div class="cb-stat-label">Pending actions</div></div></div>
+        <div class="cb-stat"><div class="cb-stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg></div><div><div class="cb-stat-value">78%</div><div class="cb-stat-label">Completion rate</div></div></div>
+      </div>
+
+      <!-- Chat -->
+      <div class="cb-chat">
+        <div class="cb-chat-inner">
+          <div class="cb-user-msg"><div class="cb-user-bubble">Chase all students with incomplete documents for Y12</div><div class="avatar avatar-sm avatar-user">JB</div></div>
+          <div class="cb-ava-msg">
+            <div class="avatar avatar-sm avatar-ava">A</div>
+            <div style="display:flex;flex-direction:column;gap:8px;max-width:460px">
+              <p style="font-size:13px;color:var(--fg)">I've completed the document chase. Here's a summary of all active tasks:</p>
+
+              <!-- Task 1: Complete -->
+              <div class="cb-task-card selected" id="cb-task-1" onclick="selectCbTask(1)">
+                <div class="cb-task-icon complete"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>
+                <div style="flex:1;min-width:0">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                    <span class="cb-task-title">Chase incomplete documents</span>
+                    <span class="status-chip status-complete"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg> Complete</span>
+                  </div>
+                  <div class="cb-task-summary">Sent 23 personalised emails for missing documents</div>
+                  <div class="cb-task-footer">
+                    <span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 2 min ago</span>
+                    <span>23 records</span>
+                    <span class="cb-task-detail-link">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Task 2: Waiting -->
+              <div class="cb-task-card" id="cb-task-2" onclick="selectCbTask(2)">
+                <div class="cb-task-icon waiting"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></div>
+                <div style="flex:1;min-width:0">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                    <span class="cb-task-title">6th Form Application Launch</span>
+                    <span class="status-chip status-waiting"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Awaiting approval</span>
+                  </div>
+                  <div class="cb-task-summary">8 pre-flight checks done, 2 manual checks remaining</div>
+                  <div class="cb-task-footer">
+                    <span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 5 min ago</span>
+                    <span>198 records</span>
+                    <span class="cb-task-detail-link">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Task 3: Working -->
+              <div class="cb-task-card" id="cb-task-3" onclick="selectCbTask(3)">
+                <div class="cb-task-icon working"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                <div style="flex:1;min-width:0">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                    <span class="cb-task-title">Auto-invite interview candidates</span>
+                    <span class="status-chip status-working"><svg class="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Working</span>
+                  </div>
+                  <div class="cb-task-summary">Filtering and matching 16 candidates for interviews</div>
+                  <div class="cb-task-footer">
+                    <span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Just now</span>
+                    <span>16 records</span>
+                    <span class="cb-task-detail-link">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cb-bottom">
+        <div class="cb-suggestions">
+          <button class="cb-suggestion-chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg> Suggested: Review 3 flagged applications</button>
+          <button class="cb-suggestion-chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted-fg)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Generate call list</button>
+        </div>
+        <div class="chat-input-wrap">
+          <input class="chat-input" placeholder="Ask Ava anything..." />
+          <div class="chat-input-actions">
+            <button class="chat-input-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+            <button class="chat-input-send"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Inspector Panel -->
+    <div class="cb-right" id="cb-right-panel">
+      <div class="cb-right-header">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0">
+          <span class="status-chip status-complete"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg> Complete</span>
+          <span style="font-size:13px;font-weight:600;color:var(--fg)" id="cb-panel-title">Chase incomplete documents</span>
+        </div>
+      </div>
+      <div class="cb-right-body">
+        <!-- Execution steps -->
+        <div class="cb-right-section">
+          <div class="cb-right-section-title">Execution steps</div>
+          <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">Scanned 247 applications</div></div>
+          <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div><div class="step-label done">Identified 23 with missing docs</div><div class="step-detail">Proof of address (12), GCSE certs (8), Passport (3)</div></div></div>
+          <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">Generated personalised emails</div></div>
+          <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">Emails sent</div></div>
+        </div>
+
+        <!-- Confidence -->
+        <div class="cb-right-section">
+          <div class="cb-right-section-title">Confidence</div>
+          <div class="confidence"><div class="confidence-track"><div class="confidence-fill high" style="width:92%"></div></div><span class="confidence-value">92%</span></div>
+        </div>
+
+        <!-- Previews -->
+        <div class="cb-right-section">
+          <div class="cb-right-section-title">Previews</div>
+          <div class="cb-preview-card"><div class="cb-preview-header"><span class="cb-preview-label">Email to Aisha Rahman</span><span class="cb-preview-link">Open</span></div><div class="cb-preview-detail">Missing: Proof of address - Personalised chase email</div></div>
+          <div class="cb-preview-card"><div class="cb-preview-header"><span class="cb-preview-label">Email to James Patterson</span><span class="cb-preview-link">Open</span></div><div class="cb-preview-detail">Missing: GCSE certificates - Personalised chase email</div></div>
+          <div class="cb-preview-card"><div class="cb-preview-header"><span class="cb-preview-label">Email to Sofia Chen</span><span class="cb-preview-link">Open</span></div><div class="cb-preview-detail">Missing: Passport copy - Personalised chase email</div></div>
+        </div>
+
+        <!-- Receipt -->
+        <div class="cb-receipt">
+          <div class="cb-right-section-title" style="margin-bottom:12px">Labour receipt</div>
+          <div class="cb-receipt-row"><span class="cb-receipt-label">Started</span><span class="cb-receipt-value">09:14 AM</span></div>
+          <div class="cb-receipt-row"><span class="cb-receipt-label">Completed</span><span class="cb-receipt-value">09:16 AM</span></div>
+          <div class="cb-receipt-row"><span class="cb-receipt-label">Records affected</span><span class="cb-receipt-value">23</span></div>
+          <div class="cb-receipt-row"><span class="cb-receipt-label">Grace period</span><span class="cb-receipt-value">30 min</span></div>
+          <div style="margin-top:8px">
+            <button class="btn-danger-text"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> Undo this action</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     CONCEPT C: ACTIVITY FEED
+     ══════════════════════════════════════════════════════════════════ -->
+<div id="concept-c" class="hidden">
+  <div class="cc-wrap">
+    <!-- Top Nav -->
+    <header class="cc-topnav">
+      <div class="cc-topnav-left">
+        <div class="cc-topnav-brand"><div class="cc-topnav-brand-icon">A+</div><span class="cc-topnav-brand-text">Admission+</span></div>
+        <nav class="cc-nav">
+          <button class="cc-nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg> Workspace</button>
+          <button class="cc-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg> Applications</button>
+          <button class="cc-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Students</button>
+          <button class="cc-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg> Documents</button>
+          <button class="cc-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> Comms</button>
+        </nav>
+      </div>
+      <div class="cc-topnav-right">
+        <button class="cc-bell"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="cc-bell-badge">2</span></button>
+        <div class="avatar avatar-sm avatar-user">JB</div>
+      </div>
+    </header>
+
+    <div class="cc-body">
+      <!-- Feed -->
+      <div class="cc-feed">
+        <div class="cc-feed-inner">
+          <div class="cc-feed-header">
+            <h1><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg> Workspace</h1>
+            <p>Your activity timeline with Ava. Everything she's working on, completed, or waiting for your input.</p>
+          </div>
+
+          <div class="cc-filters">
+            <button class="cc-filter active">All activity</button>
+            <button class="cc-filter">Actions</button>
+            <button class="cc-filter">Messages</button>
+            <button class="cc-filter">Needs attention</button>
+          </div>
+
+          <!-- Timeline -->
+          <!-- Item 1: Working -->
+          <div class="timeline-item">
+            <div class="timeline-connector"><div class="avatar avatar-sm avatar-ava">A</div><div class="timeline-line"></div></div>
+            <div class="timeline-content">
+              <div class="timeline-meta"><span class="timeline-author">Ava</span><span class="timeline-time">Just now</span></div>
+              <div class="action-block">
+                <div class="action-block-summary">
+                  <div class="action-block-summary-header">
+                    <div style="display:flex;align-items:center;gap:8px"><span class="status-chip status-working"><svg class="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Working</span><span style="font-size:13px;font-weight:500;color:var(--card-fg)">Auto-inviting interview candidates</span></div>
+                  </div>
+                  <div class="action-block-summary-text">Filtering 16 eligible candidates and matching against criteria</div>
+                  <div class="action-block-progress"><div class="action-block-progress-fill animate-pulse-bar" style="width:45%"></div></div>
+                </div>
+                <button class="action-block-toggle" onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('span').textContent=this.nextElementSibling.classList.contains('hidden')?'Show work (4 steps)':'Hide details'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg><span>Show work (4 steps)</span></button>
+                <div class="action-block-expanded hidden">
+                  <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div><div class="step-label done">Filtered eligible candidates</div><div class="step-detail">16 found</div></div></div>
+                  <div class="step"><svg class="step-icon active animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><div class="step-label active">Matching criteria: grades, refs, statement</div></div>
+                  <div class="step"><svg class="step-icon pending" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg><div class="step-label pending">Generating invitations</div></div>
+                  <div class="step"><svg class="step-icon pending" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg><div class="step-label pending">Scheduling slots</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 2: User msg -->
+          <div class="timeline-item">
+            <div class="timeline-connector"><div class="avatar avatar-sm avatar-user">JB</div><div class="timeline-line"></div></div>
+            <div class="timeline-content">
+              <div class="timeline-meta"><span class="timeline-author">You</span><span class="timeline-time">5 min ago</span></div>
+              <div class="timeline-user-msg">Prepare the 6th form application for launch</div>
+            </div>
+          </div>
+
+          <!-- Item 3: Waiting -->
+          <div class="timeline-item">
+            <div class="timeline-connector"><div class="avatar avatar-sm avatar-ava">A</div><div class="timeline-line"></div></div>
+            <div class="timeline-content">
+              <div class="timeline-meta"><span class="timeline-author">Ava</span><span class="timeline-time">4 min ago</span></div>
+              <div class="action-block">
+                <div class="action-block-summary">
+                  <div class="action-block-summary-header">
+                    <div style="display:flex;align-items:center;gap:8px"><span class="status-chip status-waiting"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Awaiting approval</span><span style="font-size:13px;font-weight:500;color:var(--card-fg)">6th Form Application Launch</span></div>
+                  </div>
+                  <div class="action-block-summary-text">8 pre-flight checks done, 2 manual checks remaining before go-live</div>
+                </div>
+                <button class="action-block-toggle" onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('span').textContent=this.nextElementSibling.classList.contains('hidden')?'Show work (7 steps)':'Hide details'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg><span>Show work (7 steps)</span></button>
+                <div class="action-block-expanded hidden">
+                  <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">Landing page configured</div></div>
+                  <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">Email templates verified</div></div>
+                  <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">32 courses loaded</div></div>
+                  <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">198 Y11 imported from Bromcom</div></div>
+                  <div class="step"><svg class="step-icon pending" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg><div class="step-label pending">Form URL added to website</div></div>
+                  <div class="step"><svg class="step-icon pending" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg><div class="step-label pending">SLT notified of go-live date</div></div>
+                  <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary btn-sm">Launch form</button><button class="btn btn-outline btn-sm">Adjust settings</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 4: User msg -->
+          <div class="timeline-item">
+            <div class="timeline-connector"><div class="avatar avatar-sm avatar-user">JB</div><div class="timeline-line"></div></div>
+            <div class="timeline-content">
+              <div class="timeline-meta"><span class="timeline-author">You</span><span class="timeline-time">12 min ago</span></div>
+              <div class="timeline-user-msg">Chase all students with incomplete documents for Year 12</div>
+            </div>
+          </div>
+
+          <!-- Item 5: Complete -->
+          <div class="timeline-item">
+            <div class="timeline-connector"><div class="avatar avatar-sm avatar-ava">A</div><div class="timeline-line"></div></div>
+            <div class="timeline-content">
+              <div class="timeline-meta"><span class="timeline-author">Ava</span><span class="timeline-time">10 min ago</span></div>
+              <div class="action-block">
+                <div class="action-block-summary">
+                  <div class="action-block-summary-header">
+                    <div style="display:flex;align-items:center;gap:8px"><span class="status-chip status-complete"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg> Complete</span><span style="font-size:13px;font-weight:500;color:var(--card-fg)">Chase incomplete documents</span></div>
+                  </div>
+                  <div class="action-block-summary-text">Sent 23 personalised emails to students with missing documents</div>
+                  <div style="margin-top:8px;max-width:260px"><div class="confidence"><div class="confidence-track"><div class="confidence-fill high" style="width:92%"></div></div><span class="confidence-value">92%</span></div></div>
+                </div>
+                <button class="action-block-toggle" onclick="this.nextElementSibling.classList.toggle('hidden');this.querySelector('span').textContent=this.nextElementSibling.classList.contains('hidden')?'Show work (4 steps)':'Hide details'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg><span>Show work (4 steps)</span></button>
+                <div class="action-block-expanded hidden">
+                  <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">Scanned 247 applications</div></div>
+                  <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div><div class="step-label done">Identified 23 missing docs</div><div class="step-detail">Proof of address (12), GCSE certs (8), Passport (3)</div></div></div>
+                  <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">Generated personalised emails</div></div>
+                  <div class="step"><svg class="step-icon done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div class="step-label done">Emails sent</div></div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px"><span class="tag tag-success">12 excellent</span><span class="tag tag-warning">8 good</span><span class="tag tag-danger">3 need phone call</span></div>
+                  <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+                    <button style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--primary)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg> View all emails</button>
+                    <span style="color:var(--muted-fg)">|</span>
+                    <button class="btn-danger-text"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg> Undo send</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 6: System -->
+          <div class="timeline-item">
+            <div class="timeline-connector"><div style="width:28px;height:28px;border-radius:50%;background:var(--muted);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted-fg)" stroke-width="2"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div></div>
+            <div class="timeline-content">
+              <div class="timeline-meta"><span class="timeline-author">System</span><span class="timeline-time">30 min ago</span></div>
+              <div class="timeline-system-msg"><strong>Session started</strong> -- Good morning, Jane. You have 247 applications this cycle.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Quick Panel -->
+      <div class="cc-panel">
+        <div class="cc-panel-header">
+          <div class="avatar avatar-sm avatar-ava">A</div>
+          <div><div style="font-size:13px;font-weight:600;color:var(--fg)">Ask Ava</div><div style="font-size:11px;color:var(--muted-fg)">Quick chat</div></div>
+          <span style="margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--success)"></span>
+        </div>
+        <div class="cc-panel-chat">
+          <div class="cc-mini-ava"><div class="avatar avatar-sm avatar-ava" style="width:24px;height:24px;font-size:10px">A</div><div class="cc-mini-ava-bubble">Good morning! You have 5 pending actions and 3 interviews to confirm today.</div></div>
+          <div class="cc-mini-user"><div class="cc-mini-user-bubble">Show me the interview list</div></div>
+          <div class="cc-mini-ava">
+            <div class="avatar avatar-sm avatar-ava" style="width:24px;height:24px;font-size:10px">A</div>
+            <div style="display:flex;flex-direction:column;gap:8px;max-width:220px">
+              <div class="cc-mini-ava-bubble">Here are today's 3 interviews:</div>
+              <div class="cc-mini-interview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Aisha R. - 10:00 AM</div>
+              <div class="cc-mini-interview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> James P. - 11:30 AM</div>
+              <div class="cc-mini-interview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Sofia C. - 2:00 PM</div>
+            </div>
+          </div>
+        </div>
+        <div class="cc-panel-suggested">
+          <div class="cc-panel-suggested-title">Suggested</div>
+          <button class="cc-panel-suggested-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> Chase remaining docs</button>
+          <button class="cc-panel-suggested-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Generate call list</button>
+          <button class="cc-panel-suggested-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg> Daily summary</button>
+        </div>
+        <div class="cc-panel-input">
+          <div class="chat-input-wrap">
+            <input class="chat-input" style="font-size:12px;padding:10px 60px 10px 12px;border-radius:8px" placeholder="Quick ask..." />
+            <div class="chat-input-actions">
+              <button class="chat-input-btn" style="padding:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+              <button class="chat-input-send" style="padding:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     CONCEPT D: KANBAN BOARD
+     ══════════════════════════════════════════════════════════════════ -->
+<div id="concept-d" class="hidden">
+  <div class="cd-wrap">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo"><div class="sidebar-logo-icon">A+</div><div><div class="sidebar-logo-text">Admission+</div><div class="sidebar-logo-sub">Greenfield Academy</div></div></div>
+      <nav class="sidebar-nav">
+        <button class="sidebar-item active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg> Chat with Ava <span class="sidebar-badge">3</span></button>
+        <button class="sidebar-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg> Applications</button>
+        <button class="sidebar-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg> Documents</button>
+        <button class="sidebar-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> Communications</button>
+        <button class="sidebar-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Students</button>
+      </nav>
+      <div class="sidebar-user"><div class="avatar avatar-sm avatar-user">JB</div><div><div class="sidebar-user-name">Jane Baker</div><div class="sidebar-user-role">Admissions Lead</div></div></div>
+    </aside>
+
+    <div class="cd-main">
+      <!-- Topbar -->
+      <header class="cd-topbar">
+        <div><h1 style="font-size:15px;font-weight:600;color:var(--fg)">Task Board</h1><p style="font-size:12px;color:var(--muted-fg)">Ava's active and completed tasks across your admissions cycle</p></div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="cd-topbar-meta"><span>247 applications</span><span class="cd-topbar-divider"></span><span>7 tasks today</span></div>
+          <button class="cd-chat-toggle active" onclick="toggleKanbanChat()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> Chat</button>
+        </div>
+      </header>
+
+      <!-- Board -->
+      <div class="cd-board-area">
+        <div class="cd-columns">
+          <!-- In Progress -->
+          <div class="cd-column">
+            <div class="cd-column-header">
+              <div style="display:flex;align-items:center;gap:8px"><span class="cd-column-dot" style="background:var(--primary)"></span><span class="cd-column-label" style="color:var(--primary)">In Progress</span></div>
+              <span class="cd-column-count">2</span>
+            </div>
+            <div class="cd-column-cards">
+              <!-- Card 1 -->
+              <div class="cd-card">
+                <div class="cd-card-header">
+                  <div class="cd-card-header-left">
+                    <div class="cd-card-icon" style="background:color-mix(in srgb,var(--primary) 10%,transparent);color:var(--primary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+                    <div><div class="cd-card-title">Auto-invite interview candidates</div><div class="cd-card-summary">Matching 16 eligible candidates against criteria</div></div>
+                  </div>
+                </div>
+                <div class="cd-card-progress"><div class="cd-card-progress-bar"><div class="cd-card-progress-fill" style="width:25%;background:var(--primary)"></div></div><div class="cd-card-progress-meta"><span>1/4 steps</span><span style="font-family:var(--font-mono)">78% confidence</span></div></div>
+                <div class="cd-card-tags"><span class="tag tag-success">14 matched</span><span class="tag tag-warning">2 partial</span></div>
+                <div class="cd-card-footer"><span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Just now</span><span>16 records</span></div>
+              </div>
+              <!-- Card 2 -->
+              <div class="cd-card">
+                <div class="cd-card-header">
+                  <div class="cd-card-header-left">
+                    <div class="cd-card-icon" style="background:color-mix(in srgb,var(--primary) 10%,transparent);color:var(--primary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></div>
+                    <div><div class="cd-card-title">Generating weekly report</div><div class="cd-card-summary">Compiling stats, conversion rates, and pipeline</div></div>
+                  </div>
+                </div>
+                <div class="cd-card-progress"><div class="cd-card-progress-bar"><div class="cd-card-progress-fill" style="width:33%;background:var(--primary)"></div></div><div class="cd-card-progress-meta"><span>1/3 steps</span></div></div>
+                <div class="cd-card-footer"><span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 2 min ago</span><span>247 records</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Awaiting Approval -->
+          <div class="cd-column">
+            <div class="cd-column-header">
+              <div style="display:flex;align-items:center;gap:8px"><span class="cd-column-dot" style="background:var(--warning)"></span><span class="cd-column-label" style="color:var(--warning)">Awaiting Approval</span></div>
+              <span class="cd-column-count">2</span>
+            </div>
+            <div class="cd-column-cards">
+              <div class="cd-card">
+                <div class="cd-card-header">
+                  <div class="cd-card-header-left">
+                    <div class="cd-card-icon" style="background:color-mix(in srgb,var(--warning) 12%,transparent);color:var(--warning)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></div>
+                    <div><div class="cd-card-title">6th Form Application Launch</div><div class="cd-card-summary">8 pre-flight checks done, 2 manual checks remaining</div></div>
+                  </div>
+                </div>
+                <div class="cd-card-progress"><div class="cd-card-progress-bar"><div class="cd-card-progress-fill" style="width:71%;background:var(--warning)"></div></div><div class="cd-card-progress-meta"><span>5/7 steps</span></div></div>
+                <div class="cd-card-footer"><span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 5 min ago</span><span>198 records</span></div>
+              </div>
+              <div class="cd-card">
+                <div class="cd-card-header">
+                  <div class="cd-card-header-left">
+                    <div class="cd-card-icon" style="background:color-mix(in srgb,var(--warning) 12%,transparent);color:var(--warning)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+                    <div><div class="cd-card-title">Scholarship eligibility review</div><div class="cd-card-summary">12 candidates flagged -- needs SLT sign-off</div></div>
+                  </div>
+                </div>
+                <div class="cd-card-progress"><div class="cd-card-progress-bar"><div class="cd-card-progress-fill" style="width:75%;background:var(--warning)"></div></div><div class="cd-card-progress-meta"><span>3/4 steps</span><span style="font-family:var(--font-mono)">85% confidence</span></div></div>
+                <div class="cd-card-tags"><span class="tag tag-success">12 eligible</span></div>
+                <div class="cd-card-footer"><span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 15 min ago</span><span>12 records</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Completed -->
+          <div class="cd-column">
+            <div class="cd-column-header">
+              <div style="display:flex;align-items:center;gap:8px"><span class="cd-column-dot" style="background:var(--success)"></span><span class="cd-column-label" style="color:var(--success)">Completed</span></div>
+              <span class="cd-column-count">3</span>
+            </div>
+            <div class="cd-column-cards">
+              <div class="cd-card">
+                <div class="cd-card-header">
+                  <div class="cd-card-header-left">
+                    <div class="cd-card-icon" style="background:color-mix(in srgb,var(--success) 10%,transparent);color:var(--success)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>
+                    <div><div class="cd-card-title">Chase incomplete documents</div><div class="cd-card-summary">Sent 23 personalised emails for missing docs</div></div>
+                  </div>
+                </div>
+                <div class="cd-card-progress"><div class="cd-card-progress-bar"><div class="cd-card-progress-fill" style="width:100%;background:var(--success)"></div></div><div class="cd-card-progress-meta"><span>4/4 steps</span><span style="font-family:var(--font-mono)">92% confidence</span></div></div>
+                <div class="cd-card-tags"><span class="tag tag-success">12 excellent</span><span class="tag tag-warning">8 good</span><span class="tag tag-danger">3 need call</span></div>
+                <div class="cd-card-footer"><span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 20 min ago</span><span>23 records</span></div>
+              </div>
+              <div class="cd-card">
+                <div class="cd-card-header">
+                  <div class="cd-card-header-left">
+                    <div class="cd-card-icon" style="background:color-mix(in srgb,var(--success) 10%,transparent);color:var(--success)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>
+                    <div><div class="cd-card-title">Sent confirmation emails</div><div class="cd-card-summary">34 interview confirmations with calendar invites</div></div>
+                  </div>
+                </div>
+                <div class="cd-card-progress"><div class="cd-card-progress-bar"><div class="cd-card-progress-fill" style="width:100%;background:var(--success)"></div></div><div class="cd-card-progress-meta"><span>4/4 steps</span><span style="font-family:var(--font-mono)">98% confidence</span></div></div>
+                <div class="cd-card-footer"><span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 1 hr ago</span><span>34 records</span></div>
+              </div>
+              <div class="cd-card">
+                <div class="cd-card-header">
+                  <div class="cd-card-header-left">
+                    <div class="cd-card-icon" style="background:color-mix(in srgb,var(--success) 10%,transparent);color:var(--success)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+                    <div><div class="cd-card-title">Updated Bromcom sync</div><div class="cd-card-summary">14 new student records, 8 updated</div></div>
+                  </div>
+                </div>
+                <div class="cd-card-progress"><div class="cd-card-progress-bar"><div class="cd-card-progress-fill" style="width:100%;background:var(--success)"></div></div><div class="cd-card-progress-meta"><span>4/4 steps</span><span style="font-family:var(--font-mono)">100% confidence</span></div></div>
+                <div class="cd-card-footer"><span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 2 hrs ago</span><span>22 records</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Drawer -->
+      <div class="cd-chat-drawer open" id="kanban-chat">
+        <button class="cd-chat-drawer-toggle" onclick="toggleKanbanChat()">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="avatar avatar-sm avatar-ava" style="width:24px;height:24px;font-size:10px">A</div>
+            <span style="font-size:13px;font-weight:500;color:var(--fg)">Chat with Ava</span>
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--success)"></span>
+          </div>
+          <svg id="kanban-chat-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted-fg)" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="cd-chat-drawer-body">
+          <div class="cd-chat-messages">
+            <div class="cd-chat-ava-row"><div class="avatar avatar-sm avatar-ava" style="width:24px;height:24px;font-size:10px">A</div><div class="cd-chat-ava-bubble">Good morning, Jane! You have 2 tasks awaiting your approval and 2 currently running. The document chase completed -- 23 emails sent.</div></div>
+            <div class="cd-chat-user-row"><div class="cd-chat-user-bubble">Chase all students with incomplete documents for Year 12</div><div class="avatar avatar-sm avatar-user" style="width:24px;height:24px;font-size:10px">JB</div></div>
+            <div class="cd-chat-ava-row"><div class="avatar avatar-sm avatar-ava" style="width:24px;height:24px;font-size:10px">A</div><div class="cd-chat-ava-bubble">Done! I've sent 23 personalised chase emails. You can see the completed card on the board. 12 were excellent matches, 8 good, and 3 may need a phone call. Want me to generate a call list for those 3?</div></div>
+          </div>
+          <div class="cd-chat-bottom">
+            <div class="cd-chat-bottom-inner">
+              <div class="cd-chat-quick-actions">
+                <button class="quick-action"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> Chase documents</button>
+                <button class="quick-action"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Call list</button>
+                <button class="quick-action"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg> Summary</button>
+                <button class="quick-action"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg> What next?</button>
+              </div>
+              <div class="chat-input-wrap">
+                <input class="chat-input" placeholder="Ask Ava anything about admissions..." />
+                <div class="chat-input-actions">
+                  <button class="chat-input-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+                  <button class="chat-input-send"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     JAVASCRIPT
+     ══════════════════════════════════════════════════════════════════ -->
+<script>
+  function showConcept(id) {
+    document.getElementById('switcher').classList.add('hidden');
+    document.getElementById('concept-a').classList.add('hidden');
+    document.getElementById('concept-b').classList.add('hidden');
+    document.getElementById('concept-c').classList.add('hidden');
+    document.getElementById('concept-d').classList.add('hidden');
+    document.getElementById('concept-' + id).classList.remove('hidden');
+    document.getElementById('back-btn').classList.remove('hidden');
+  }
+
+  function showSwitcher() {
+    document.getElementById('switcher').classList.remove('hidden');
+    document.getElementById('concept-a').classList.add('hidden');
+    document.getElementById('concept-b').classList.add('hidden');
+    document.getElementById('concept-c').classList.add('hidden');
+    document.getElementById('concept-d').classList.add('hidden');
+    document.getElementById('back-btn').classList.add('hidden');
+  }
+
+  function selectCbTask(id) {
+    document.querySelectorAll('.cb-task-card').forEach(el => el.classList.remove('selected'));
+    var el = document.getElementById('cb-task-' + id);
+    if (el) el.classList.add('selected');
+  }
+
+  function toggleKanbanChat() {
+    var chat = document.getElementById('kanban-chat');
+    var chevron = document.getElementById('kanban-chat-chevron');
+    if (chat.classList.contains('open')) {
+      chat.classList.remove('open');
+      chat.classList.add('closed');
+      chevron.innerHTML = '<path d="m6 15-6-6 6-6"/>';
+    } else {
+      chat.classList.remove('closed');
+      chat.classList.add('open');
+      chevron.innerHTML = '<path d="m6 9 6 6 6-6"/>';
+    }
+  }
+</script>
+
+</body>
+</html>
